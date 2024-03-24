@@ -15,6 +15,9 @@ import json
 from pymongo import MongoClient
 import os 
 from dotenv import load_dotenv
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
