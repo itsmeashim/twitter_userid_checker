@@ -68,13 +68,15 @@ def process_message(message):
         message_title = embed['title'] if 'title' in embed else ''
         message_desc = embed['description'] if 'description' in embed else ''
         message_fields = embed['fields'] if 'fields' in embed else ''
-        logging.INFO(f"Message Title: {message_title}")
+        log_msg = f"Message Title: {message_title}"
+        logging.info(log_msg)
 
         fields_values = [list(field.values()) for field in message_fields]
         token_address = ''
         token_address = [field['value'].split('](')[0].rstrip(')').strip('[') for field in embed['fields'] if field['name'] == "Token Address"]
 
-        logging.INFO(f"Token Address: {token_address[0]}")
+        log_msg = f"Token Address: {token_address[0]}"
+        logging.info(log_msg)
 
         creator_address = [field['value'].split('](')[0].rstrip(')').strip('[') for field in embed['fields'] if field['name'] == "Creator"]
 
@@ -105,18 +107,18 @@ def check_response(response, prev_id, latest_message_id, channel_id):
                 return new_id
 
             twitter_username = twitter_link.split("/")[-1].split("?")[0]
-            logging.INFO(f"Twitter username: {twitter_username}")
+            logging.info(f"Twitter username: {twitter_username}")
 
             send_message_to_discord(f"Twitter username: {twitter_username}", ash_webhook_url)
 
             user_id = get_twitter_id(twitter_username)
-            logging.INFO(f"Twitter id: {user_id}")
+            logging.info(f"Twitter id: {user_id}")
 
             if not user_id:
                 return new_id
 
             isMatch = doesIdMatch(user_id, twitter_username)
-            logging.INFO(f"Is match: {isMatch}")
+            logging.info(f"Is match: {isMatch}")
 
             bothMatches = doesBothMatch(user_id)
             if bothMatches:
@@ -134,7 +136,7 @@ def check_response(response, prev_id, latest_message_id, channel_id):
                 hehe = collection.update_one({"twitter_id": user_id}, {"$push": {"tokens": data}})
                 results = collection.find_one({"twitter_id": user_id})
                 results = list(results['tokens'])
-                logging.INFO(f"Results: {results}")
+                logging.info(f"Results: {results}")
                 send_alert_to_discord(guild_id, channel_id, new_id, embed, token_address, results, toko_webhook_url)
                 send_message_to_discord(f"Contract address with same twitter id but different username {token_address} Found!", ash_webhook_url)
             else:

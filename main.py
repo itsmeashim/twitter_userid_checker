@@ -22,7 +22,9 @@ if __name__ == "__main__":
     while True:
         # Increment check count and print status
         i += 1
-        print(f"Checking Now, times checked: {i}")
+        response = f"Checking Now, times checked: {i}"
+        print(response)
+        logging.info(response)
         try:
             # Fetch messages from Discord
             new_token_response = get_response(NEWTOKEN_ID)
