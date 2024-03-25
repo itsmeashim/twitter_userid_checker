@@ -35,7 +35,7 @@ def get_twitter_link(token_address):
         return 'err404'
 
     if not metadata_uri:
-        return None
+        return ''
 
     response = requests.request("GET", metadata_uri)
 
@@ -45,12 +45,12 @@ def get_twitter_link(token_address):
     response = response.json()
     print(response)
     
-    url = response.get('extensions', {}).get('twitter', None)
+    url = response.get('extensions', {}).get('twitter', '')
     
     if url and ("twitter.com" in url or "x.com" in url):
         return url
 
-    description = response.get('description', None)
+    description = response.get('description', '')
 
     extractor = URLExtract()
     urls = extractor.find_urls(description)
@@ -60,4 +60,4 @@ def get_twitter_link(token_address):
         if "x.com" in url or "twitter.com" in url:
             return url
 
-    return url
+    return ''

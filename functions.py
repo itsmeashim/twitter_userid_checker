@@ -114,6 +114,7 @@ def check_response(response, prev_id, latest_message_id, channel_id):
 
             bothMatches = doesBothMatch(user_id)
             if bothMatches:
+                send_message_to_discord(f"Contract address with same twitter id {token_address} Found!", ash_webhook_url)
                 return new_id
 
             data = {
