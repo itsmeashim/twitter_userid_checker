@@ -14,7 +14,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 # Download and install the specified version of ChromeDriver
 RUN wget -N https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.58/linux64/chromedriver-linux64.zip -P /tmp \
     && unzip /tmp/chromedriver-linux64.zip -d /usr/local/bin \
-    && chmod +x /usr/local/bin/chromedriver \
+    && chmod +x /usr/local/bin/chromedriver-linux64/chromedriver \
+    && mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
     && rm /tmp/chromedriver-linux64.zip
 
 # Copy the current directory contents into the container at /usr/src/app
