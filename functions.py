@@ -7,11 +7,15 @@ from ownserver_logger import send_message_to_discord, send_exception_to_discord
 from connection_setter import collection
 from dotenv import load_dotenv
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
 toko_webhook_url = os.getenv('toko_webhook_url')
 ash_webhook_url = os.getenv('ash_webhook_url')
+guild_id = os.getenv('guild_id')
 DC_TOKEN = os.getenv('DC_TOKEN')
 
 def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address, results, webhook_url=toko_webhook_url):
@@ -64,13 +68,13 @@ def process_message(message):
         message_title = embed['title'] if 'title' in embed else ''
         message_desc = embed['description'] if 'description' in embed else ''
         message_fields = embed['fields'] if 'fields' in embed else ''
-        print(f"Message title: {message_title}")
+        logging.INFO(f"Message Title: {message_title}")
 
         fields_values = [list(field.values()) for field in message_fields]
         token_address = ''
         token_address = [field['value'].split('](')[0].rstrip(')').strip('[') for field in embed['fields'] if field['name'] == "Token Address"]
 
-        print(f"Token Address1: {token_address[0]}")     
+        logging.INFO(f"Token Address: {token_address[0]}")
 
         creator_address = [field['value'].split('](')[0].rstrip(')').strip('[') for field in embed['fields'] if field['name'] == "Creator"]
 
@@ -101,16 +105,18 @@ def check_response(response, prev_id, latest_message_id, channel_id):
                 return new_id
 
             twitter_username = twitter_link.split("/")[-1].split("?")[0]
-            print(f"Twitter username: {twitter_username}")
+            logging.INFO(f"Twitter username: {twitter_username}")
+
+            send_message_to_discord(f"Twitter username: {twitter_username}", ash_webhook_url)
 
             user_id = get_twitter_id(twitter_username)
-            print(f"Twitter id: {user_id}")
+            logging.INFO(f"Twitter id: {user_id}")
 
             if not user_id:
                 return new_id
 
             isMatch = doesIdMatch(user_id, twitter_username)
-            print(f"Is match: {isMatch}")
+            logging.INFO(f"Is match: {isMatch}")
 
             bothMatches = doesBothMatch(user_id)
             if bothMatches:
@@ -128,7 +134,7 @@ def check_response(response, prev_id, latest_message_id, channel_id):
                 hehe = collection.update_one({"twitter_id": user_id}, {"$push": {"tokens": data}})
                 results = collection.find_one({"twitter_id": user_id})
                 results = list(results['tokens'])
-                print(f"Results: {results}")
+                logging.INFO(f"Results: {results}")
                 send_alert_to_discord(guild_id, channel_id, new_id, embed, token_address, results, toko_webhook_url)
                 send_message_to_discord(f"Contract address with same twitter id but different username {token_address} Found!", ash_webhook_url)
             else:

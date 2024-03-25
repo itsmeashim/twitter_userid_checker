@@ -3,6 +3,9 @@ from connection_setter import collection
 from dotenv import load_dotenv
 import os
 import json
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 load_dotenv()
 
