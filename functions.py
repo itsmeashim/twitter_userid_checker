@@ -109,10 +109,10 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             twitter_username = twitter_link.split("/")[-1].split("?")[0]
             logging.info(f"Twitter username: {twitter_username}")
 
-            send_message_to_discord(f"Twitter username: {twitter_username}", ash_webhook_url)
-
             user_id = get_twitter_id(twitter_username)
             logging.info(f"Twitter id: {user_id}")
+
+            send_message_to_discord(f"Twitter username: {twitter_username} - Twitter id: {user_id}", ash_webhook_url)
 
             if not user_id:
                 return new_id
