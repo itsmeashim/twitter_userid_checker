@@ -1,6 +1,6 @@
 import requests
 import json
-from metadata_api import get_twitter_link
+# from metadata_api import get_twitter_link
 from twitter_api import doesIdMatch, get_twitter_id, doesBothMatch
 from scraper import scrape
 from ownserver_logger import send_message_to_discord, send_exception_to_discord
@@ -97,16 +97,18 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             if not token_address:
                 return new_id
 
-            twitter_link = get_twitter_link(token_address)
+            # twitter_link = get_twitter_link(token_address)
 
-            if 'err404' in twitter_link:
-                twitter_link = ""
-                twitter_link = scrape(token_address)
+            # if 'err404' in twitter_link:
+            #     twitter_link = ""
+            #     twitter_link = scrape(token_address)
+
+            twitter_link = scrape(token_address)
 
             if not twitter_link:
                 return new_id
 
-            twitter_username = twitter_link.split("/")[-1].split("?")[0]
+            twitter_username = twitter_link.strip("/").split("/")[-1].split("?")[0]
             logging.info(f"Twitter username: {twitter_username}")
 
             user_id = get_twitter_id(twitter_username)
