@@ -59,7 +59,7 @@ def doesIdMatch(user_id, username):
         return False
     results = list(results.get('tokens', {}))
 
-    if all(result['twitter_username'] != username for result in results):
+    if all(result['twitter_username'].lower() != username.lower() for result in results):
         return True
 
     return False
@@ -74,6 +74,6 @@ def doesBothMatch(user_id, username):
     
     results = list(results.get('tokens', {}))
 
-    if any(result['twitter_username'] == username for result in results):
+    if any(result['twitter_username'].lower() == username.lower() for result in results):
         return True
     return False
