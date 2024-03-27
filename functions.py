@@ -18,8 +18,8 @@ ash_webhook_url = os.getenv('ash_webhook_url')
 guild_id = os.getenv('guild_id')
 DC_TOKEN = os.getenv('DC_TOKEN')
 
-def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address, results, webhook_url=toko_webhook_url):
-    response = ""
+def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address, old_twitter_username, results, webhook_url=toko_webhook_url):
+    response = f"Current Username: {old_twitter_username}\n\n\n Previous Usernames:\n"
     
     for result in results:
         token_address = result['token']
@@ -32,7 +32,7 @@ def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address
     link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
 
     embed_pd = {
-        "title": f"Contract address with same twitter id {token_address} Found!",
+        "title": f"Contract address with same twitter id but different usernames {token_address} Found!",
         "description": response,
         "url": link
     }
@@ -97,12 +97,6 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             if not token_address:
                 return new_id
 
-            # twitter_link = get_twitter_link(token_address)
-
-            # if 'err404' in twitter_link:
-            #     twitter_link = ""
-            #     twitter_link = scrape(token_address)
-
             twitter_link = scrape(token_address)
 
             if not twitter_link:
@@ -112,6 +106,7 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             logging.info(f"Twitter username: {twitter_username}")
 
             user_id = get_twitter_id(twitter_username)
+            user_id = str(user_id)
             logging.info(f"Twitter id: {user_id}")
 
             send_message_to_discord(f"Twitter username: {twitter_username} - Twitter id: {user_id}", ash_webhook_url)
@@ -122,7 +117,7 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             isMatch = doesIdMatch(user_id, twitter_username)
             logging.info(f"Is match: {isMatch}")
 
-            bothMatches = doesBothMatch(user_id)
+            bothMatches = doesBothMatch(user_id, twitter_username)
             if bothMatches:
                 send_message_to_discord(f"Contract address with same twitter id {token_address} Found!", ash_webhook_url)
                 return new_id
@@ -135,11 +130,15 @@ def check_response(response, prev_id, latest_message_id, channel_id):
             }
 
             if isMatch:
-                hehe = collection.update_one({"twitter_id": user_id}, {"$push": {"tokens": data}})
-                results = collection.find_one({"twitter_id": user_id})
-                results = list(results['tokens'])
+                print(f"Userid: {user_id}")
+                results = collection.find_one({"twitter_id": f"{user_id}"})
+                print(f"Results: {results}")
+                if not results:
+                    return new_id
+                results = list(results.get('tokens', {}))
                 logging.info(f"Results: {results}")
-                send_alert_to_discord(guild_id, channel_id, new_id, embed, token_address, results, toko_webhook_url)
+                hehe = collection.update_one({"twitter_id": f"{user_id}"}, {"$push": {"tokens": data}})
+                send_alert_to_discord(guild_id, channel_id, new_id, embed, token_address, twitter_username, results, toko_webhook_url)
                 send_message_to_discord(f"Contract address with same twitter id but different username {token_address} Found!", ash_webhook_url)
             else:
                 collection.insert_one({"twitter_id": f"{user_id}", "tokens": [data]})

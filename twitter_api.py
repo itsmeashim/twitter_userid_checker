@@ -57,18 +57,23 @@ def doesIdMatch(user_id, username):
     results = collection.find_one({"twitter_id": f"{user_id}"})
     if not results:
         return False
-    results = list(results['tokens'])
+    results = list(results.get('tokens', {}))
 
-    for result in results:
-        twitter_username = result['twitter_username']
-
-        if twitter_username != username:
-            return True
+    if all(result['twitter_username'] != username for result in results):
+        return True
 
     return False
 
-def doesBothMatch(user_id):
+def doesBothMatch(user_id, username):
     if not user_id:
         return False
-    result = collection.find_one({"twitter_id": f"{user_id}"})
-    return result != None
+    results = collection.find_one({"twitter_id": f"{user_id}"})
+
+    if not results:
+        return False
+    
+    results = list(results.get('tokens', {}))
+
+    if any(result['twitter_username'] == username for result in results):
+        return True
+    return False
