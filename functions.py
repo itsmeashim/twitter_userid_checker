@@ -19,7 +19,7 @@ guild_id = os.getenv('guild_id')
 DC_TOKEN = os.getenv('DC_TOKEN')
 
 def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address, old_twitter_username, results, webhook_url=toko_webhook_url):
-    response = f"Current Username: {old_twitter_username}\n\n\n Previous Usernames:\n"
+    response = f"**Current Username**: `{old_twitter_username}`\n\n\n **---Previous Deploys---**:\n\n"
     
     for result in results:
         token_address = result['token']
@@ -27,7 +27,7 @@ def send_alert_to_discord(guild_id, channel_id, message_id, embed, token_address
         twitter_username = result['twitter_username']
         msg_id = result['message_id']
         
-        response += f"Token Address: {token_address}\nCreator: {creator}\nTwitter Username: {twitter_username}\n[Message](https://discord.com/channels/{guild_id}/{channel_id}/{msg_id})\n\n"
+        response += f"**Token Address**: `{token_address}`\n**Creator**: `{creator}`\n**Twitter Username**: {twitter_username}\n[Message](https://discord.com/channels/{guild_id}/{channel_id}/{msg_id})\n\n"
         
     link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
 
