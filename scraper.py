@@ -31,15 +31,6 @@ def scrape(contract: str):
 
         wait = WebDriverWait(driver, 10)
 
-        # print the upper xpath
-        try:
-            element = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4"]/dt[@class="text-sm font-medium text-gray-300"]')))
-            print(element.text)
-        except Exception as e:
-            send_message_to_discord(f"Error occurred while scraping and reading description {contract}:\n", ash_webhook_url)
-            driver.quit()
-            return False
-
         try:
             # name = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4"]/dt[@class="text-sm font-medium text-gray-300"](@contains text, "Name")/dd[@class="mt-1 text-sm text-gray-100 sm:mt-0 sm:col-span-2"]')))
             element = wait.until(EC.presence_of_element_located((
