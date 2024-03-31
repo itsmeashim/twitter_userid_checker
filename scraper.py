@@ -13,17 +13,20 @@ load_dotenv()
 
 ash_webhook_url = os.getenv('ash_webhook_url')
 
+chrome_driver_path = '/usr/local/bin/chromedriver'
+os.environ["CHROMEDRIVER_PATH"] = chrome_driver_path
+
 blacklisted_names = ['unknown', 'orca']
 
 def scrape(contract: str):
     driver = None
+    twitter_link = ''
     try:
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
 
-        chrome_driver_path = '/usr/local/bin/chromedriver'
-        driver = webdriver.Chrome(options=options, executable_path=chrome_driver_path)
+        driver = webdriver.Chrome(options=options)
         driver.get(f'https://www.dexlab.space/mintinglab/spl-token/{contract}')
         send_message_to_discord(f"Scraping [{contract}](https://www.dexlab.space/mintinglab/spl-token/{contract})", ash_webhook_url)
 
