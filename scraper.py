@@ -22,7 +22,8 @@ def scrape(contract: str):
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
 
-        driver = webdriver.Chrome(options=options)
+        chrome_driver_path = '/usr/local/bin/chromedriver'
+        driver = webdriver.Chrome(options=options, executable_path=chrome_driver_path)
         driver.get(f'https://www.dexlab.space/mintinglab/spl-token/{contract}')
         send_message_to_discord(f"Scraping [{contract}](https://www.dexlab.space/mintinglab/spl-token/{contract})", ash_webhook_url)
 
