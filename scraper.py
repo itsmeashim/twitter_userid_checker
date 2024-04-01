@@ -36,20 +36,26 @@ def scrape(contract: str):
 
         wait = WebDriverWait(driver, 10)
         
-        name_element = wait.until(EC.presence_of_element_located((
-            By.XPATH,
-            "//div[contains(@class, 'py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4')]//dt[contains(@class, 'text-sm font-medium text-gray-300') and contains(text(), 'Name')]/following-sibling::dd[contains(@class, 'mt-1 text-sm text-gray-100 sm:mt-0 sm:col-span-2')]"
-        )))
+        try:
+            name_element = wait.until(EC.presence_of_element_located((
+                By.XPATH,
+                "//div[contains(@class, 'py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4')]//dt[contains(@class, 'text-sm font-medium text-gray-300') and contains(text(), 'Name')]/following-sibling::dd[contains(@class, 'mt-1 text-sm text-gray-100 sm:mt-0 sm:col-span-2')]"
+            )))
+        except:
+            name_element = ''
         name = name_element.text if name_element else ''
 
         if any(blacklisted_name.lower() in name.lower() for blacklisted_name in blacklisted_names):
             send_message_to_discord(f"Blacklisted name: {name} {contract}", ash_webhook_url)
             return False
 
-        description_element = wait.until(EC.presence_of_element_located((
-            By.XPATH,
-            '//div[@class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4"]/dd[@class="mt-1 text-sm text-gray-100 sm:mt-0 sm:col-span-2 break-words"]'
-        )))
+        try:
+            description_element = wait.until(EC.presence_of_element_located((
+                By.XPATH,
+                '//div[@class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4"]/dd[@class="mt-1 text-sm text-gray-100 sm:mt-0 sm:col-span-2 break-words"]'
+            )))
+        except:
+            description_element = ''
         description = description_element.text if description_element else ''
 
         extractor = URLExtract()
