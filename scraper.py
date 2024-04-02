@@ -70,17 +70,12 @@ def scrape(contract: str):
         for element in links_elements:
             href = element.get_attribute('href').lower()
             if 'twitter' in href or 'x.com' in href:
-                twitter_link = href
-                break
-
-        return twitter_link
+                return href
 
     except Exception as e:
         send_exception_to_discord(e, ash_webhook_url)
+        return ''
 
-        return twitter_link
     finally:
         if driver:
             driver.quit()
-
-    return twitter_link
