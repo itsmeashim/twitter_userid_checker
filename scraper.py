@@ -30,6 +30,7 @@ def scrape(contract: str):
         service = Service(executable_path=chrome_driver_path)
 
         driver = webdriver.Chrome(service=service, options=options)
+        driver.set_page_load_timeout(120)
         driver.get(f'https://www.dexlab.space/mintinglab/spl-token/{contract}')
         send_message_to_discord(f"Scraping [{contract}](https://www.dexlab.space/mintinglab/spl-token/{contract})", ash_webhook_url)
         time.sleep(5)
@@ -72,8 +73,12 @@ def scrape(contract: str):
                 twitter_link = href
                 break
 
+        return twitter_link
+
     except Exception as e:
         send_exception_to_discord(e, ash_webhook_url)
+
+        return twitter_link
     finally:
         if driver:
             driver.quit()
