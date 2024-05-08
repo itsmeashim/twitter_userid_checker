@@ -23,6 +23,11 @@ def scrape(contract: str):
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')  # Helps prevent Chrome crash in Docker container
+        options.add_argument('--disable-gpu')  # Disables GPU hardware acceleration
+        options.add_argument('--disable-extensions')  # Disables extensions to increase performance
+        options.add_argument('--disable-infobars')
+        options.add_argument('--user-data-dir=/tmp/chrome-user-data')
+        options.add_argument('--no-zygote')
 
         chrome_driver_path = "/usr/local/bin/chromedriver"
 
